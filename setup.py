@@ -38,24 +38,6 @@ else:
     extra_compile_args = ["-std=c++11", "-O3"]
 
 
-class NumpyExtension(Extension):
-    """Source: https://stackoverflow.com/a/54128391"""
-
-    def __init__(self, *args, **kwargs):
-        self.__include_dirs = []
-        super().__init__(*args, **kwargs)
-
-    @property
-    def include_dirs(self):
-        import numpy
-
-        return self.__include_dirs + [numpy.get_include()]
-
-    @include_dirs.setter
-    def include_dirs(self, dirs):
-        self.__include_dirs = dirs
-
-
 extensions = [
     Extension(
         "fairseq.libbleu",
@@ -64,19 +46,7 @@ extensions = [
             "fairseq/clib/libbleu/module.cpp",
         ],
         extra_compile_args=extra_compile_args,
-    ),
-    NumpyExtension(
-        "fairseq.data.data_utils_fast",
-        sources=["fairseq/data/data_utils_fast.pyx"],
-        language="c++",
-        extra_compile_args=extra_compile_args,
-    ),
-    NumpyExtension(
-        "fairseq.data.token_block_utils_fast",
-        sources=["fairseq/data/token_block_utils_fast.pyx"],
-        language="c++",
-        extra_compile_args=extra_compile_args,
-    ),
+    )
 ]
 
 
@@ -181,7 +151,6 @@ def do_setup(package_data):
             "cython",
             "hydra-core>=1.0.7,<1.1",
             "omegaconf<2.1",
-            "numpy>=1.21.3",
             "regex",
             "sacrebleu>=1.4.12",
             "tqdm",
